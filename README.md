@@ -28,7 +28,7 @@ python fsmtool.py fsm.yaml -c/--autosar-c [FILE]
 # Generate C++ code for HPP Application Framework - NOT IMPLEMENTED YET
 python fsmtool.py fsm.yaml -b/--hpp-cpp [FILE]
   
-# Generate the corresponding Stateflow model - NOT FULLY IMPLEMENTED YET
+# Generate a Matlab script that creates the corresponding Stateflow model
 python fsmtool.py fsm.yaml -s/--stateflow [FILE]
 
 # Generate the corresponding YAML file
