@@ -5,7 +5,7 @@ Exploring how to generate ASTs from yaml files and then create data structures f
 The main parts of this tool are the following:
 - ```fsmdomainmodel.py``` - Data classes represwenting an FSM and its states and transitions. 
 - ```fsm2yaml.py``` - a Generator to create YAML files from an FSM domain model representation. 
-- ```fsm2stateflow.py``` - a Generator to create Matlab scripts for generating Stateflow daigrams from an FSM domain model representation. 
+- ```fsm2stateflow.py``` - a Generator to create Matlab scripts for generating Stateflow diagrams from an FSM domain model representation. 
 - ```fsm2plantuml.py``` - a Generator to create PlantUML files from an FSM domain model representation. 
 - ```yaml_ast_parser.py``` - a general YAML parser that creates an abstract syntax tree of the file contents. 
 - ```fsmtool.py``` - a parser for the YAML-based FSM specification format. It uses the yaml_ast_parser to create a general AST of the YAML file and then builds an FSM domain-specific data structure/AST (from ```fsmdomainmodel.py```) based on the general YAML AST. Based on this FSM AST, a number of different outputs can be generated (see below). Each output type has its own generator.
