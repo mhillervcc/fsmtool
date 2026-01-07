@@ -58,6 +58,7 @@ class FSMParser:
     def __init__(self):
         self.yaml_parser = YAMLASTParser()
         self.current_file = None
+        self.formatversion = None
 
     def parse_file(self, filename: str) -> Fsm:
         """Parse an FSM from a file"""
@@ -86,12 +87,23 @@ class FSMParser:
         """Parse the beginning of the FSM structure to get name, version, and initial state"""
         data = self._mapping_to_dict(mapping)
         
-        # Chack that we have the 'statemachine' key
+        # Check if we have the 'fsmformat' key
+        if 'fsmformat' not in data:
+            self.formatversion = '0.1'
+        else:
+            self.formatversion = str(data['fsmformat'])
+
+        # Check that we have the 'statemachine' key
         if 'statemachine' not in data:
             raise FSMParseError("FSM definition must start with the 'statemachine' key")
             
-        # Let's parse the FSM now
-        fsm_node = mapping.pairs[0].value
+        # Let's parse the FSM now. If we have the fsmformat key, the FSM is under 'statemachine'
+        # which is the second key, otherwise it's the first key.
+        if 'fsmformat' in data:
+            fsm_node = mapping.pairs[1].value
+        else:
+            fsm_node = mapping.pairs[0].value
+    
         if not isinstance(fsm_node, MappingNode):
             raise FSMParseError("FSM definition must be a mapping")
         return self._parse_fsm(fsm_node)
