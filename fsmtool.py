@@ -126,6 +126,7 @@ class FSMParser:
         fsm = Fsm(
             name = data['name'],
             version = str(data['version']),
+            description = data.get('description', 'No description'),
             initial_state = data['initial_state'],
             states=[])
     
@@ -152,6 +153,7 @@ class FSMParser:
         
         state = FsmState(
             name = data.get('name', 'UnnamedState'),
+            description = data.get('description', 'No description'),
             is_initial = data.get('is_initial', False),
             is_final = data.get('is_final', False),
             on_entry_actions = data.get('on_entry', []),
@@ -185,6 +187,7 @@ class FSMParser:
         transition = FsmTransition(
             target_state = data.get('target_state', 'No target state set'),
             condition = data.get('condition', 'No condition set'),
+            description = data.get('description', 'No description'),
             priority = data.get('priority', 0),
             on_transition_actions = data.get('on_transition', [])
         )

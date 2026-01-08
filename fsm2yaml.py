@@ -58,6 +58,7 @@ class FSM2YAMLGenerator:
         self.indent_level += 1
         self._write(f"name: {fsm.name}")
         self._write(f"version: {fsm.version}")
+        self._write(f"description: {fsm.description}")
         self._write(f"initial_state: {fsm.initial_state}")
 
         if fsm.states:
@@ -75,6 +76,7 @@ class FSM2YAMLGenerator:
         self._write(f"#" + "#" * (80 - len(self.indent_str * self.indent_level) - 1))
         self._write(f"-   name: {state.name}")
         self.indent_level += 1
+        self._write(f"description: {state.description}")
         self._write(f"is_initial: {state.is_initial}")
         self._write(f"is_final: {state.is_final}")
         if state.on_entry_actions:
@@ -106,6 +108,7 @@ class FSM2YAMLGenerator:
         self._write(f"-   target_state: {transition.target_state}")
         self.indent_level += 1
         self._write(f"condition: {transition.condition}")
+        self._write(f"description: {transition.description}")
         self._write(f"priority: {transition.priority}")
 
         if transition.on_transition_actions:

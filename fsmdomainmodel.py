@@ -15,6 +15,7 @@ class FsmTransition:
     """Class representing a transition in an FSM. Source state is implicit. Target state is explicit."""
     target_state: str = "No target state set"
     condition: str = "No condition set"
+    description: str = "No description"
     priority: int = 0
     on_transition_actions: Optional[List[str]] = None
 
@@ -25,6 +26,7 @@ class FsmTransition:
         result = f"{spaces}- target_state: {self.target_state}\n"
         spaces += "  "
         result += f"{spaces}condition: {self.condition}\n"
+        result += f"{spaces}description: {self.description}\n"
         result += f"{spaces}priority: {self.priority}\n"
         result += f"{spaces}on_transition:\n"
         if self.on_transition_actions:
@@ -36,6 +38,7 @@ class FsmTransition:
 class FsmState:
     """Class representing a state in an FSM"""
     name: str = "UnnamedState"
+    description: str = "No description"
     is_initial: bool = False
     is_final: bool = False
     on_entry_actions: Optional[List[str]] = None
@@ -48,6 +51,7 @@ class FsmState:
 
         spaces = " " * indent
         result = f"{spaces}name: {self.name}\n"
+        result += f"{spaces}description: {self.description}\n"
         result += f"{spaces}is_initial: {self.is_initial}\n"
         result += f"{spaces}is_final: {self.is_final}\n"
         if self.on_entry_actions:
@@ -73,6 +77,7 @@ class Fsm:
     """Class representing a Finite State Machine (FSM)"""
     name: str = "UnnamedFSM"
     version: str = "Not set"
+    description: str = "No description"
     initial_state: str = "Not set"
     states: List[FsmState] = field(default_factory=list)
 
@@ -86,6 +91,7 @@ class Fsm:
         spaces += "  "
         result += f"\n{spaces}version: {self.version}"
         result += f"\n{spaces}initial_state: {self.initial_state}"
+        result += f"\n{spaces}description: {self.description}"
 
         if self.states:
             result += f"\n{spaces}states:"
