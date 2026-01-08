@@ -21,6 +21,7 @@ fsmformat: 0.1
 statemachine:
     name: MyFSM
     version: 1.0.0
+    description: Example FSM for device state management
     initial_state: POWER_OFF
     states:
 
@@ -28,6 +29,7 @@ statemachine:
 # State: POWER_OFF
 #------------------------------------------------------------------------------
     -   name: POWER_OFF
+        description: The device is powered off.
 #
 # On entry actions
 #
@@ -59,6 +61,7 @@ statemachine:
 # State: BOOTING
 #------------------------------------------------------------------------------
     -   name: BOOTING
+        description: The device is booting up.
 
 # On entry actions
         on_entry:
@@ -94,6 +97,8 @@ statemachine:
 # State: OPERATIONAL
 #------------------------------------------------------------------------------
     -   name: OPERATIONAL
+        description: The device is fully operational.
+
 # On entry actions
         on_entry:
         -   start_services()
@@ -141,6 +146,8 @@ statemachine:
 # State: BOOT_FAILURE
 #------------------------------------------------------------------------------
     -   name: BOOT_FAILURE
+        description: The device failed to boot properly.
+
 # On entry actions
         on_entry:
         -   log("Entering BOOT_FAILURE state")
@@ -170,6 +177,8 @@ statemachine:
 # State: ERROR_STATE
 #------------------------------------------------------------------------------
     -   name: ERROR_STATE
+        description: The device is in an error state.
+
 # On entry actions
         on_entry:
         -   log("Entering ERROR_STATE state")
@@ -201,6 +210,8 @@ statemachine:
 # State: GOING_TO_SLEEP
 #------------------------------------------------------------------------------
     -   name: GOING_TO_SLEEP
+        description: The device is preparing to enter sleep mode.
+
 # On entry actions
         on_entry:
         -   prepare_for_sleep()
@@ -225,6 +236,8 @@ statemachine:
 # State: SLEEPING
 #------------------------------------------------------------------------------
     -   name: SLEEPING
+        description: The device is in sleep mode.
+
 # On entry actions
         on_entry:   
         -   log("Entering SLEEPING state")
@@ -248,6 +261,8 @@ statemachine:
 # State: SHUTTING_DOWN
 #------------------------------------------------------------------------------
     -   name: SHUTTING_DOWN
+        description: The device is shutting down.
+
 # On entry actions
         on_entry:
         -   log("Entering SHUTTING_DOWN state")
@@ -271,6 +286,8 @@ statemachine:
 # State: MAINTENANCE
 #------------------------------------------------------------------------------
     -   name: MAINTENANCE
+        description: The device is in maintenance mode.
+        
 # On entry actions
         on_entry:
         -   log("Entering MAINTENANCE state")
