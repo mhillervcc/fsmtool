@@ -32,12 +32,12 @@ from fsm2plantuml import *
 # Sets up the command-line interface for the FSM tool using argparse.
 # 
 # The supported commands are:
-# --plantuml : Generate PlantUML state diagram
-# --autosar-c : Generate C code for AUTOSAR Classic SW-Cs
-# --hpp-cpp : Generate C++ code for HPP Application Framework
-# --stateflow : Generate a Matlab script to create a Simulink/Stateflow model
-# --yaml : Generate the corresponding YAML file
-# --analyze : Show detailed analysis of the FSM
+# -p/--plantuml : Generate PlantUML state diagram
+# -c/--autosar-c : Generate C code for AUTOSAR Classic SW-Cs
+# -b/--hpp-cpp : Generate C++ code for HPP Application Framework
+# -s/--stateflow : Generate a Matlab script to create a Simulink/Stateflow model
+# -y/--yaml : Generate the corresponding YAML file
+# -a/--analyze : Show detailed analysis of the FSM
 #
 ###########################################################################
 def setup_argparser():
