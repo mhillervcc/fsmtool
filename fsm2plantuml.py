@@ -41,6 +41,7 @@ class FSM2PlantUMLGenerator:
         self._write("PlantUML description of FSM.")
         self._write(f"State machine: {fsm.name}")
         self._write(f"Version: {fsm.version}")
+        self._write(f"Description: {fsm.description}")
         self._write(f"Generated on: {generation_time}")
         self._write("'" * 80 + "'/")
         self._write("")
@@ -84,6 +85,11 @@ class FSM2PlantUMLGenerator:
         if state.is_final:
             self._write(f"{state.name} --> [*]")
 
+        # Now add the state description if it exists
+        if state.description and state.description != "No description":
+            self._write(f"{state.name} : {state.description}")
+            self._write("")
+
         # Now add actions as comments in the state
         if state.on_entry_actions:
             self._write(f"{state.name} : \\nOn entry actions:")
@@ -108,9 +114,9 @@ class FSM2PlantUMLGenerator:
     def _generate_transition(self, transition: FsmTransition, source_state: str):
         """Generates PlantUML for a transition."""
         self._write(f"{source_state} --> {transition.target_state} : Condition: {transition.condition}"\
+                        + (f"\\n Description: {transition.description}" if transition.description and transition.description != "No description" else "")\
                         + (f"\\n Priority: {transition.priority}" if transition.priority is not None else "")\
                         + (f"\\n Actions: {', '.join(transition.on_transition_actions)}" if transition.on_transition_actions else ""))
-
      
         self._write("")
 

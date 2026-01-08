@@ -16,6 +16,7 @@ class FSM2YAMLGenerator:
     def __init__(self):
         self.indent_level = 0
         self.indent_str = "    "
+        self.fsmformat = "0.1"
 
     def generate(self, fsm: Fsm, output_file: Optional[str] = None):
         """Generate YAML for the state machine"""
@@ -43,10 +44,13 @@ class FSM2YAMLGenerator:
         self._write("%YAML 1.2")
         self._write("---")
         self._write("")
+        self._write(f"fsmformat: {self.fsmformat}")
+        self._write("")
         self._write("#" * 80)
         self._write(f"# Start of Finite State Machine: {fsm.name}")
         self._write("#" * 80)
-
+        self._write("")
+        
     def _generate_footer(self, fsm: Fsm):
         self._write("#" * 80)
         self._write(f"# End of Finite State Machine: {fsm.name}")
