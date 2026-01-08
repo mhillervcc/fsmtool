@@ -13,7 +13,6 @@
 
 # Import necessary standard modules
 import argparse
-import sys
 
 # Import domain model and generators
 from fsmdomainmodel import *
