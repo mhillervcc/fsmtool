@@ -1,0 +1,292 @@
+%YAML 1.2
+---
+
+#
+# Example of state machine for device state
+#
+
+fsmformat: 0.1
+
+#------------------------------------------------------------------------------
+# FSM "interface" (inputs/outputs)
+#------------------------------------------------------------------------------
+
+# How should we specify inputs/outputs?
+# For now, we will just assume that the conditions in the transitions
+# refer to some external variables or functions defined elsewhere.
+
+#------------------------------------------------------------------------------
+# FSM basics
+#------------------------------------------------------------------------------
+statemachine:
+    name: MyFSM
+    version: 1.0.0
+    initial_state: POWER_OFF
+    states:
+
+#------------------------------------------------------------------------------
+# State: POWER_OFF
+#------------------------------------------------------------------------------
+    -   name: POWER_OFF
+#
+# On entry actions
+#
+        on_entry:
+        -   log("Entering POWER_OFF state")
+        -   shutdown_hardware()
+#
+# On exit actions
+#
+        on_exit:
+        -   log("Exiting POWER_OFF state")
+
+#
+# No do actions, since we're off...
+#
+
+#
+# Transitions
+#
+        transitions:
+
+        -   target_state: BOOTING
+            condition: power_on == True
+            priority: 1 # Only one transition here, so this doesn't really matter. Could be omitted.
+            on_transition:
+            -   log("transition POWER_OFF --> BOOTING")
+
+#------------------------------------------------------------------------------
+# State: BOOTING
+#------------------------------------------------------------------------------
+    -   name: BOOTING
+
+# On entry actions
+        on_entry:
+        -   initialize_hardware()
+        -   reset_timer(boot_time)
+        -   log("Entering BOOTING state")
+
+# On exit actions
+        on_exit:
+        -   log("Exiting BOOTING state")
+# Do actions
+        do:
+        -   check_boot_status()
+
+#
+# Transitions
+#
+        transitions:
+
+        -   target_state: OPERATIONAL
+            condition: boot_complete == True
+            priority: 1
+            on_transition:
+            -   log("transition BOOTING --> OPERATIONAL")
+
+        -   target_state: BOOT_FAILURE
+            condition: boot_failed == True || (boot_time > 300)
+            priority: 2
+            on_transition:
+            -   log("transition BOOTING --> BOOT_FAILURE")
+
+#------------------------------------------------------------------------------
+# State: OPERATIONAL
+#------------------------------------------------------------------------------
+    -   name: OPERATIONAL
+# On entry actions
+        on_entry:
+        -   start_services()
+        -   log("Entering OPERATIONAL state")
+# On exit actions
+        on_exit:
+        -   log("Exiting OPERATIONAL state")
+# Do actions
+        do:
+        -   monitor_system()
+# Transitions
+        transitions:
+
+        -   target_state: POWER_OFF
+            condition: power_off == True
+            priority: 1
+            on_transition:
+            -   log("transition OPERATIONAL --> POWER_OFF")
+        
+        -   target_state: ERROR_STATE
+            condition: error_detected == True
+            priority: 2
+            on_transition:
+            -   log("transition OPERATIONAL --> ERROR_STATE")
+        
+        -   target_state: GOING_TO_SLEEP
+            condition: sleep_command == True
+            priority: 3
+            on_transition:
+            -   log("transition OPERATIONAL --> GOING_TO_SLEEP")
+
+        -   target_state: SHUTTING_DOWN
+            condition: shutdown_command == True
+            priority: 4
+            on_transition:
+            -   log("transition OPERATIONAL --> SHUTTING_DOWN")
+
+        -   target_state: MAINTENANCE
+            condition: maintenance_mode == True
+            priority: 5
+            on_transition:
+            -   log("transition OPERATIONAL --> MAINTENANCE")
+
+#------------------------------------------------------------------------------
+# State: BOOT_FAILURE
+#------------------------------------------------------------------------------
+    -   name: BOOT_FAILURE
+# On entry actions
+        on_entry:
+        -   log("Entering BOOT_FAILURE state")
+# On exit actions
+        on_exit:
+        -   log("Exiting BOOT_FAILURE state")
+# Do actions
+        do:
+        -   attempt_recovery()
+
+# Transitions
+        transitions:
+
+        -   target_state: POWER_OFF
+            condition: power_off == True
+            priority: 1
+            on_transition:
+            -   log("transition BOOT_FAILURE --> POWER_OFF")
+
+        -   target_state: BOOTING
+            condition: retry_boot == True
+            priority: 2
+            on_transition:
+            -   log("transition BOOT_FAILURE --> BOOTING")
+
+#------------------------------------------------------------------------------
+# State: ERROR_STATE
+#------------------------------------------------------------------------------
+    -   name: ERROR_STATE
+# On entry actions
+        on_entry:
+        -   log("Entering ERROR_STATE state")
+# On exit actions
+        on_exit:
+        -   log("Exiting ERROR_STATE state")
+# Do actions    
+        do:
+        -   diagnose_error()
+# Final state?
+        final_state: true
+
+# Transitions
+        transitions:
+
+        -   target_state: POWER_OFF
+            condition: power_off == True
+            priority: 1
+            on_transition:
+            -   log("transition ERROR_STATE --> POWER_OFF")
+
+        -   target_state: OPERATIONAL
+            condition: error_resolved == True
+            priority: 2
+            on_transition:
+            -   log("transition ERROR_STATE --> OPERATIONAL")
+
+#------------------------------------------------------------------------------
+# State: GOING_TO_SLEEP
+#------------------------------------------------------------------------------
+    -   name: GOING_TO_SLEEP
+# On entry actions
+        on_entry:
+        -   prepare_for_sleep()
+        -   log("Entering GOING_TO_SLEEP state")
+# On exit actions
+        on_exit:
+        -   log("Exiting GOING_TO_SLEEP state")
+# Do actions
+        do:
+        -   enter_sleep_mode()
+
+# Transitions
+        transitions:
+
+        -   target_state: SLEEPING
+            condition: sleep_ready == True
+            priority: 1
+            on_transition:
+            -   log("transition GOING_TO_SLEEP --> SLEEPING")   
+
+#------------------------------------------------------------------------------
+# State: SLEEPING
+#------------------------------------------------------------------------------
+    -   name: SLEEPING
+# On entry actions
+        on_entry:   
+        -   log("Entering SLEEPING state")
+# On exit actions
+        on_exit:
+        -   log("Exiting SLEEPING state")
+# Do actions
+        do:
+        -   monitor_wake_conditions()
+
+# Transitions
+        transitions:
+
+        -   target_state: OPERATIONAL
+            condition: wake_signal == True
+            priority: 1
+            on_transition:
+                -   log("transition SLEEPING --> OPERATIONAL")
+
+#------------------------------------------------------------------------------
+# State: SHUTTING_DOWN
+#------------------------------------------------------------------------------
+    -   name: SHUTTING_DOWN
+# On entry actions
+        on_entry:
+        -   log("Entering SHUTTING_DOWN state")
+# On exit actions
+        on_exit:
+        -   log("Exiting SHUTTING_DOWN state")
+# Do actions
+        do:
+        -   perform_shutdown()
+
+# Transitions
+        transitions:
+
+        -   target_state: POWER_OFF
+            condition: shutdown_complete == True
+            priority: 1
+            on_transition:
+            -   log("transition SHUTTING_DOWN --> POWER_OFF")
+
+#------------------------------------------------------------------------------
+# State: MAINTENANCE
+#------------------------------------------------------------------------------
+    -   name: MAINTENANCE
+# On entry actions
+        on_entry:
+        -   log("Entering MAINTENANCE state")
+# On exit actions
+        on_exit:
+        -   log("Exiting MAINTENANCE state")
+# Do actions
+        do:
+        -   perform_maintenance_tasks()
+
+# Transitions
+        transitions:
+
+        -   target_state: OPERATIONAL
+            condition: maintenance_complete == True
+            priority: 1
+            on_transition:
+            -   log("transition MAINTENANCE --> OPERATIONAL")
+
