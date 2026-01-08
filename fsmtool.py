@@ -176,6 +176,10 @@ def main():
         if args.analyze:
             print("FSM analysis not supported yet.\n")
 
+        # If no specific output requested, print the FSM object
+        if not (args.plantuml or args.autosar_c or args.hpp_cpp or args.stateflow or args.yaml or args.analyze):
+            print(fsm)
+
         return 0
         
     except Exception as e:
