@@ -143,7 +143,6 @@ def main():
     args = parser_cli.parse_args()
 
     # Create parser instance
-#    yaml_parser = YAMLASTParser()
     fsm_parser = FSMParser()
 
     try:
