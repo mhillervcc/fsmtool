@@ -106,11 +106,11 @@ class FSMParser:
         
         # Create FSM instance
         fsm = Fsm(
-            name=data['name'],
-            version=str(data['version']),
-            description=data.get('description', 'No description'),
-            initial_state=data['initial_state'],
-            states=[]
+            name = data['name'],
+            version = str(data['version']),
+            description = data.get('description', 'No description'),
+            initial_state = data['initial_state'],
+            states = []
         )
     
         # Parse states
@@ -135,14 +135,14 @@ class FSMParser:
             raise FSMParseError("A state must have a 'name' field")
         
         state = FsmState(
-            name=data.get('name', 'UnnamedState'),
-            description=data.get('description', 'No description'),
-            is_initial=data.get('is_initial', False),
-            is_final=data.get('is_final', False),
-            on_entry_actions=data.get('on_entry', []),
-            do_actions=data.get('do', []),
-            on_exit_actions=data.get('on_exit', []),
-            transitions=[]
+            name = data.get('name', 'UnnamedState'),
+            description = data.get('description', 'No description'),
+            is_initial = data.get('is_initial', False),
+            is_final = data.get('is_final', False),
+            on_entry_actions = data.get('on_entry', []),
+            do_actions = data.get('do', []),
+            on_exit_actions = data.get('on_exit', []),
+            transitions = []
         )
         
         # Ensure action lists are actually lists
@@ -181,11 +181,11 @@ class FSMParser:
             on_transition_actions = [on_transition_actions] if on_transition_actions else []
         
         transition = FsmTransition(
-            target_state=data.get('target_state', 'No target state set'),
-            condition=data.get('condition', 'No condition set'),
-            description=data.get('description', 'No description'),
-            priority=data.get('priority', 0),
-            on_transition_actions=on_transition_actions
+            target_state = data.get('target_state', 'No target state set'),
+            condition = data.get('condition', 'No condition set'),
+            description = data.get('description', 'No description'),
+            priority = data.get('priority', 0),
+            on_transition_actions = on_transition_actions
         )
         
         return transition
