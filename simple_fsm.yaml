@@ -1,0 +1,173 @@
+%YAML 1.2
+---
+
+#
+# Example of state machine for device state
+#
+
+fsmformat: 0.2
+
+#------------------------------------------------------------------------------
+# FSM "interface" (inputs/outputs)
+#------------------------------------------------------------------------------
+
+# How do we add information on which APIs the inputs/outputs refer to? is there some 'include' / 'use' / 'import' or similar
+# in IFEX that we can copy? Would be good to be able to link to official API specifications.
+
+# How should we specify inputs/outputs?
+
+# Only the symbols defined here can be used in the conditions and emit actions
+# in the states and transitions.
+
+# This is an example for discussing how to specify sources for inputs/outputs.
+inputs:
+    -   name: go_to_state_1
+        type: boolean
+        source: internal # Example of source specification. Can be 'internal' or refer to a specific API.
+                         # If no source is given, it is assumed to be 'internal'.
+                         # Is 'local' a better word?
+        description: Indicates if the command to go to STATE_1 has been issued.
+
+    -   name: go_to_state_2
+        source: vps.somemodule.go_to_state_2 # Example of source specification linking to an official API specification
+        description: Indicates if the command to go to STATE_2 has been issued.
+
+outputs:
+    -   name: current_device_state
+        type: string
+        description: Current state.
+
+    -   name: transition_made
+        type: boolean
+        description: Indicates if a state transition has occurred.
+
+    -   name: previous_device_state
+        type: string
+        description: Previous state.
+
+# Should we list possible command actions as well?
+#
+# commands:
+#    -   name: log
+#        description: Log a message to the system log.
+
+
+#------------------------------------------------------------------------------
+# FSM basics
+#------------------------------------------------------------------------------
+statemachine:
+    name: SimpleFSM
+    version: 1.0.0
+    description: Example FSM for testing purposes
+    initial_state: STATE_1
+    # Shall we add a tick?
+    tick: 10 # in milliseconds
+    states:
+
+#------------------------------------------------------------------------------
+# State: POWER_OFF
+#------------------------------------------------------------------------------
+    -   name: STATE_1
+        description: Example state 1.
+#
+# On entry actions
+#
+        on_entry:
+        -   type: command
+            command: |
+                log("Entering STATE_1 state")
+             
+        -   type: emit
+            output: current_device_state
+            value: "STATE_1"
+
+        -   type: emit
+            output: transition_made
+            value: False
+
+#
+# On exit actions
+#
+        on_exit:
+        -   type: command
+            command: |
+                log("Exiting STATE_1 state")
+#
+# Do actions
+#
+
+        do:
+        -   type: command
+            command: |
+                log("Doing STATE_1 actions")
+
+
+# Transitions
+        transitions:
+        -   target_state: STATE_2
+            condition: go_to_state_2 == True
+            priority: 1 # Only one transition here, so this doesn't really matter. Could be omitted.
+            on_transition:
+            -   type: command
+                command: |
+                    log("transition STATE_1 --> STATE_2")
+
+            -   type: emit
+                output: transition_made
+                value: True
+
+            -   type: emit
+                output: previous_device_state
+                value: "STATE_1"
+
+#------------------------------------------------------------------------------
+# State: STATE_2
+#------------------------------------------------------------------------------
+    -   name: STATE_2
+        description: Example state 2.
+
+# On entry actions
+        on_entry:
+        -   type: command
+            command: |
+                log("Entering STATE_2 state")
+
+        -   type: emit
+            output: current_device_state
+            value: "STATE_2"
+
+        -   type: emit
+            output: transition_made
+            value: False
+
+# On exit actions
+        on_exit:
+        -   type: command
+            command: |
+                log("Exiting STATE_2 state")
+# Do actions
+        do:
+        -   type: command
+            command: |
+                log("Doing STATE_2 actions")
+# Transitions
+#        transitions:
+        -   target_state: STATE_1
+            condition: go_to_state_1 == True
+            priority: 1
+            on_transition:
+            -   type: command
+                command: |
+                    log("transition STATE_2 --> STATE_1")
+
+            -   type: emit
+                output: transition_made
+                value: True
+
+            -   type: emit
+                output: previous_device_state
+                value: "STATE_2"
+
+##############################################################################
+# End of FSM definition
+##############################################################################
